@@ -39,6 +39,7 @@ jobs:
         python main.py
       env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          SHEETS_TOKEN: ${{ secrets.SHEETS_TOKEN }}
           UPDATE_ID: ${{ github.event.client_payload.update_id }}
     - name: Repository Dispatch
       uses: actions/github-script@v2

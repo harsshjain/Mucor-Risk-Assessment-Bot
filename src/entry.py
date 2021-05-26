@@ -6,6 +6,9 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMa
 import json
 import logging
 from expiringdict import ExpiringDict
+from .gsheets_main import upload_to_sheets
+from datetime import datetime
+from pytz import timezone
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -53,9 +56,13 @@ Do they have pain over the cheek bones? """,
            ("No", 0)]},
 ]
 
-user_status = {}
+user_status = dict()
 
-initial_data = {'stage': 0, 'score': 0}
+def getISTTime(utc_time):
+    format = "%Y-%m-%d %H:%M:%S %Z"
+    now_asia = utc_time.astimezone(timezone('Asia/Kolkata'))
+    return now_asia.strftime(format)
+
 
 def getRiskLevel(score):
     if score< 3:
@@ -68,8 +75,9 @@ def getRiskLevel(score):
         return "This patient is at high risk for mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
 
 def entry(bot, update):
-    print(user_status)
-    print(initial_data)
+    initial_data = {'stage': 0, 'score': 0, 'sheet_data': []}
+    # print(json.dumps(user_status, indent=2))
+    # print(json.dumps(initial_data, indent=4))
     try:
         # res = bot.send_message(chat_id="-1001164870268", text=json.dumps(update.to_dict(), indent=2))
         # print(json.dumps(update.to_dict(), indent=2))
@@ -80,10 +88,16 @@ def entry(bot, update):
         # bot.send_message(chat_id="-1001164870268", text=str(e))
     if update.message and update.message.text:
         chat_id = update.message.chat_id
-        if chat_id not in user_status:
+        if chat_id not in user_status or update.message.text == "/start":
+            if chat_id in user_status:
+                del user_status[chat_id]
             user_status[chat_id] = initial_data.copy()
-        if update.message.text == "/start":
-            user_status[chat_id] = initial_data.copy()
+            user_status[chat_id]['sheet_data'].append(getISTTime(update.message.date))
+            user_status[chat_id]['sheet_data'].append(chat_id)
+            if update.message.chat.username:
+                user_status[chat_id]['sheet_data'].append(update.message.chat.username)
+            else:
+                user_status[chat_id]['sheet_data'].append("")
         if update.message.text == "/cancel":
             del user_status[chat_id]
             bot.sendMessage(chat_id=update.message.chat_id,
@@ -91,6 +105,7 @@ def entry(bot, update):
             return
         if user_status[chat_id]['stage'] > 0:
             answers = questions[(user_status[chat_id]['stage'])-1]['A']
+            user_status[chat_id]['sheet_data'].append(update.message.text)
             for a in answers:
                 if update.message.text in a:
                     user_status[chat_id]['score'] = user_status[chat_id]['score'] + a[1]
@@ -107,3 +122,11 @@ def entry(bot, update):
                             text=getRiskLevel(user_status[chat_id]['score'])+
                             "\n\nSend /start to start over", reply_markup=ReplyKeyboardRemove())
             bot.sendDocument(chat_id=update.message.chat_id, document="BQACAgUAAxkDAAIB1WCtuxPgY7iBLYCta-xejxxSHxjdAAI7AgACxP5gVfL8CC0pN1ErHwQ")
+            user_status[chat_id]['sheet_data'].append(user_status[chat_id]['score'])
+            user_status[chat_id]['sheet_data'].append(getISTTime(update.message.date))
+            try:
+                upload_to_sheets(user_status[chat_id]['sheet_data'])
+            except Exception as e:
+                print("Upload error")
+                print(e)
+            del user_status[chat_id]
