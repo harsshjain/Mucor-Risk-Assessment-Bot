@@ -94,6 +94,7 @@ def entry(bot, update):
             user_status[chat_id] = initial_data.copy()
             user_status[chat_id]['sheet_data'].append(getISTTime(update.message.date))
             user_status[chat_id]['sheet_data'].append(chat_id)
+            user_status[chat_id]['sheet_data'].append(update.message.chat.first_name)
             if update.message.chat.username:
                 user_status[chat_id]['sheet_data'].append(update.message.chat.username)
             else:
