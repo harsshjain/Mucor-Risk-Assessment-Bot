@@ -59,13 +59,13 @@ initial_data = {'stage': 0, 'score': 0}
 
 def getRiskLevel(score):
     if score< 3:
-        return "Minimal"
+        return "This patient is at minimal risk, and there is no need to worry unless they get more symptoms."
     elif score <5:
-        return "Low"
+        return "This patient is at low risk for mucormycosis, and should get checked by a doctor if they have any symptoms."
     elif score < 8:
-        return "Moderate"
+        return "This patient is at moderate risk and should consult an ent specialist to rule out mucormycosis."
     else:
-        return "High"
+        return "This patient is at high risk for mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
 
 def entry(bot, update):
     print(user_status)
@@ -78,7 +78,6 @@ def entry(bot, update):
     except Exception as e:
         logging.error(e)
         # bot.send_message(chat_id="-1001164870268", text=str(e))
-        pass
     if update.message and update.message.text:
         chat_id = update.message.chat_id
         if chat_id not in user_status:
@@ -105,6 +104,6 @@ def entry(bot, update):
             user_status[chat_id]['stage'] = user_status[chat_id]['stage']+1
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
-                            text="Score = "+str(user_status[chat_id]['score'])+
-                            "\nYou are "+getRiskLevel(user_status[chat_id]['score'])+" Risk"
-                            "\nEnd of questions, Send /start to start over", reply_markup=ReplyKeyboardRemove())
+                            text=getRiskLevel(user_status[chat_id]['score'])+
+                            "\n\nSend /start to start over", reply_markup=ReplyKeyboardRemove())
+            bot.sendDocument(chat_id=update.message.chat_id, document="BQACAgUAAxkDAAIB1WCtuxPgY7iBLYCta-xejxxSHxjdAAI7AgACxP5gVfL8CC0pN1ErHwQ")

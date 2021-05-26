@@ -43,9 +43,12 @@ def main():
                 update_id = update.update_id + 1
                 logging.info(f"Update ID:{update_id}")
                 entry(bot, update)
-        except NetworkError:
+        except NetworkError as e:
+            print("Network Error")
+            print(e)
             sleep(1)
         except Unauthorized:
+            print("Unauthorized")
             # The user has removed or blocked the bot.
             update_id += 1
         # except Exception as e:
