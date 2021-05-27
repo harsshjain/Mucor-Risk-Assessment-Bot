@@ -126,7 +126,7 @@ def entry(bot, update):
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
                             text="Patient risk assessment:\n\n"+getRiskLevel(user_status[chat_id]['score']) +
-                            "\n\n*Note that this only a risk assessment and not medical advice. Consult a doctor if you suspect you have mucormycosis\nSend /start to start over",
+                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have mucormycosis\n\nSend /start to start over",
                             reply_markup=InlineKeyboardMarkup([
                                 [InlineKeyboardButton(
                                     "Know More", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
