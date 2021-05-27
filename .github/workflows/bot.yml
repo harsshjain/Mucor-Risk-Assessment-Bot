@@ -1,9 +1,9 @@
 name: cov19medbot
 
 on:
-  schedule:
+  #schedule:
   #   # every 10 minutes the job will run
-  - cron: "*/10 * * * *"
+  #cron: "*/10 * * * *"
   push:
     branches:
       - main
