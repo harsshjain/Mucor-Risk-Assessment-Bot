@@ -71,9 +71,9 @@ def getRiskLevel(score):
     elif score < 5:
         return "This patient is at low risk for Mucormycosis, and should get checked by a doctor if they have any symptoms."
     elif score < 8:
-        return "This patient is at moderate risk and should consult an ent specialist to rule out Mucormycosis."
+        return "This patient is at moderate risk and should consult an ENT specialist to rule out Mucormycosis."
     else:
-        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
+        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ENT specialist, dental surgeon or ophthalmologist depending on their symptoms."
 
 
 def entry(bot, update):
@@ -126,7 +126,7 @@ def entry(bot, update):
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
                             text="Patient risk assessment:\n\n"+getRiskLevel(user_status[chat_id]['score']) +
-                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have Mucormycosis\n\nSend /start to start over",
+                            "\n\n*Note that this is only a patient education initiative and not medical advice. Consult a doctor if you suspect you have Mucormycosis or any other health issues.\n\nSend /start to start over",
                             reply_markup=InlineKeyboardMarkup([
                                 [InlineKeyboardButton(
                                     "Know More about Mucormycosis", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
