@@ -59,7 +59,7 @@ Do they have pain over the cheek bones? """,
 user_status = dict()
 
 def getISTTime(utc_time):
-    format = "%Y-%m-%d %H:%M:%S %Z"
+    format = "%Y-%m-%d %H:%M:%S"
     now_asia = utc_time.astimezone(timezone('Asia/Kolkata'))
     return now_asia.strftime(format)
 
