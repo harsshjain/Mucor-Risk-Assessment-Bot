@@ -17,7 +17,7 @@ logging.basicConfig(
 )
 
 questions = [
-    {'Q': "Are you concerned that you or your patient could have mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?",
+    {'Q': "Are you concerned that you or your patient could have Mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?",
      'A': [
          ("Yes", 1),
          ("No", 0)]},
@@ -69,11 +69,11 @@ def getRiskLevel(score):
     if score < 3:
         return "This patient is at minimal risk, and there is no need to worry unless they get more symptoms."
     elif score < 5:
-        return "This patient is at low risk for mucormycosis, and should get checked by a doctor if they have any symptoms."
+        return "This patient is at low risk for Mucormycosis, and should get checked by a doctor if they have any symptoms."
     elif score < 8:
-        return "This patient is at moderate risk and should consult an ent specialist to rule out mucormycosis."
+        return "This patient is at moderate risk and should consult an ent specialist to rule out Mucormycosis."
     else:
-        return "This patient is at high risk for mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
+        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
 
 
 def entry(bot, update):
@@ -126,14 +126,14 @@ def entry(bot, update):
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
                             text="Patient risk assessment:\n\n"+getRiskLevel(user_status[chat_id]['score']) +
-                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have mucormycosis\n\nSend /start to start over",
+                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have Mucormycosis\n\nSend /start to start over",
                             reply_markup=InlineKeyboardMarkup([
                                 [InlineKeyboardButton(
-                                    "Know More", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
+                                    "Know More about Mucormycosis", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
                                 [InlineKeyboardButton(
                                     "Ask a Doctor", url='https://t.me/CovidMedHelp')],
                                 [InlineKeyboardButton(
-                                    "Share", switch_inline_query='can help you assess your risk of mucormycosis. Send a message to this bot to start your assessment')],
+                                    "Share this bot", switch_inline_query='can help you assess your risk of Mucormycosis. I used it and wanted to share it with you. Send a message to this bot to start your assessment.')],
                             ]))
             # bot.sendDocument(chat_id=update.message.chat_id, document="BQACAgUAAxkDAAIB1WCtuxPgY7iBLYCta-xejxxSHxjdAAI7AgACxP5gVfL8CC0pN1ErHwQ")
             user_status[chat_id]['sheet_data'].append(
