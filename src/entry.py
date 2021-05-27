@@ -17,15 +17,15 @@ logging.basicConfig(
 )
 
 questions = [
-    {'Q': "Are you concerned that you or your patient could have mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?",
+    {'Q': "Are you concerned that you or your patient could have Mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?",
      'A': [
          ("Yes", 1),
          ("No", 0)]},
     {'Q': """Does the patient have any of the following conditions?
-Type 2 diabetes mellitus
-History of organ transplant
-History of cancer (malignancy) or burns
-Malnutrition """,
+- Type 2 diabetes mellitus
+- History of organ transplant
+- History of cancer (malignancy) or burns
+- Malnutrition """,
      'A': [("Yes", 1),
            ("No", 0)]},
     {'Q': """Have they taken oral or injectable corticosteroids like methylprednisolone or dexamethasone? """,
@@ -58,6 +58,7 @@ Do they have pain over the cheek bones? """,
 
 user_status = dict()
 
+
 def getISTTime(utc_time):
     format = "%Y-%m-%d %H:%M:%S"
     now_asia = utc_time.astimezone(timezone('Asia/Kolkata'))
@@ -65,14 +66,15 @@ def getISTTime(utc_time):
 
 
 def getRiskLevel(score):
-    if score< 3:
+    if score < 3:
         return "This patient is at minimal risk, and there is no need to worry unless they get more symptoms."
-    elif score <5:
-        return "This patient is at low risk for mucormycosis, and should get checked by a doctor if they have any symptoms."
+    elif score < 5:
+        return "This patient is at low risk for Mucormycosis, and should get checked by a doctor if they have any symptoms."
     elif score < 8:
-        return "This patient is at moderate risk and should consult an ent specialist to rule out mucormycosis."
+        return "This patient is at moderate risk and should consult an ent specialist to rule out Mucormycosis."
     else:
-        return "This patient is at high risk for mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
+        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
+
 
 def entry(bot, update):
     initial_data = {'stage': 0, 'score': 0, 'sheet_data': []}
@@ -92,11 +94,14 @@ def entry(bot, update):
             if chat_id in user_status:
                 del user_status[chat_id]
             user_status[chat_id] = initial_data.copy()
-            user_status[chat_id]['sheet_data'].append(getISTTime(update.message.date))
+            user_status[chat_id]['sheet_data'].append(
+                getISTTime(update.message.date))
             user_status[chat_id]['sheet_data'].append(chat_id)
-            user_status[chat_id]['sheet_data'].append(update.message.chat.first_name)
+            user_status[chat_id]['sheet_data'].append(
+                update.message.chat.first_name)
             if update.message.chat.username:
-                user_status[chat_id]['sheet_data'].append(update.message.chat.username)
+                user_status[chat_id]['sheet_data'].append(
+                    update.message.chat.username)
             else:
                 user_status[chat_id]['sheet_data'].append("")
         if update.message.text == "/cancel":
@@ -116,15 +121,25 @@ def entry(bot, update):
             ans_list = [[i[0]] for i in answers]
             bot.sendMessage(chat_id=update.message.chat_id,
                             text=questions[user_status[chat_id]['stage']]['Q'],
-                            reply_markup=ReplyKeyboardMarkup(ans_list))
+                            reply_markup=ReplyKeyboardMarkup(keyboard=ans_list, one_time_keyboard=True))
             user_status[chat_id]['stage'] = user_status[chat_id]['stage']+1
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
-                            text=getRiskLevel(user_status[chat_id]['score'])+
-                            "\n\nSend /start to start over", reply_markup=ReplyKeyboardRemove())
-            bot.sendDocument(chat_id=update.message.chat_id, document="BQACAgUAAxkDAAIB1WCtuxPgY7iBLYCta-xejxxSHxjdAAI7AgACxP5gVfL8CC0pN1ErHwQ")
-            user_status[chat_id]['sheet_data'].append(user_status[chat_id]['score'])
-            user_status[chat_id]['sheet_data'].append(getISTTime(update.message.date))
+                            text="Patient risk assessment:\n\n"+getRiskLevel(user_status[chat_id]['score']) +
+                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have Mucormycosis\n\nSend /start to start over",
+                            reply_markup=InlineKeyboardMarkup([
+                                [InlineKeyboardButton(
+                                    "Know More about Mucormycosis", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
+                                [InlineKeyboardButton(
+                                    "Ask a Doctor", url='https://t.me/CovidMedHelp')],
+                                [InlineKeyboardButton(
+                                    "Share this bot", switch_inline_query='can help you assess your risk of Mucormycosis. I used it and wanted to share it with you. Send a message to this bot to start your assessment.')],
+                            ]))
+            # bot.sendDocument(chat_id=update.message.chat_id, document="BQACAgUAAxkDAAIB1WCtuxPgY7iBLYCta-xejxxSHxjdAAI7AgACxP5gVfL8CC0pN1ErHwQ")
+            user_status[chat_id]['sheet_data'].append(
+                user_status[chat_id]['score'])
+            user_status[chat_id]['sheet_data'].append(
+                getISTTime(update.message.date))
             try:
                 upload_to_sheets(user_status[chat_id]['sheet_data'])
             except Exception as e:
