@@ -121,7 +121,7 @@ def entry(bot, update):
             ans_list = [[i[0]] for i in answers]
             bot.sendMessage(chat_id=update.message.chat_id,
                             text=questions[user_status[chat_id]['stage']]['Q'],
-                            reply_markup=ReplyKeyboardMarkup(ans_list))
+                            reply_markup=ReplyKeyboardMarkup(keyboard=ans_list, one_time_keyboard=True))
             user_status[chat_id]['stage'] = user_status[chat_id]['stage']+1
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
