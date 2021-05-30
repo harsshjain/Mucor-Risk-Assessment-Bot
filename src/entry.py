@@ -17,41 +17,61 @@ logging.basicConfig(
 )
 
 questions = [
-    {'Q': "Are you concerned that you or your patient could have Mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?",
+    {'Q': """Question 1:
+
+Are you concerned that you or your patient could have Mucormycosis? Does your patient currently have covid or did they recover from covid in the last 30 days?""",
      'A': [
          ("Yes", 1),
          ("No", 0)]},
-    {'Q': """Does the patient have any of the following conditions?
+    {'Q': """Question 2:
+
+Does the patient have any of the following conditions?
 - Type 2 diabetes mellitus
 - History of organ transplant
 - History of cancer (malignancy) or burns
 - Malnutrition """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': """Have they taken oral or injectable corticosteroids like methylprednisolone or dexamethasone? """,
+    {'Q': """Question 3:
+
+Have they taken oral or injectable corticosteroids like methylprednisolone or dexamethasone? """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': """Did they have a prolonged ICU stay (more than 4-5 days) for covid treatment? """,
+    {'Q': """Question 4:
+
+Did they have a prolonged ICU stay (more than 4-5 days) for covid treatment? """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': "Do they have nasal discharge? ",
+    {'Q': """Question 5:
+
+Do they have nasal discharge? """,
      'A': [("Yes", 1),
            ("Yes, bloody red or blackish colored", 2),
            ("No", 0)]},
-    {'Q': """Do they have facial swelling numbness or pain?
+    {'Q': """Question 6:
+
+Do they have facial swelling numbness or pain?
 Do they have pain over the cheek bones? """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': "Do they have abnormal blackish discoloration over the eyes, in the skin over the nose or in the mouth? ",
+    {'Q': """Question 7:
+
+Do they have abnormal blackish discoloration over the eyes, in the skin over the nose or in the mouth? """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': "Do they have toothaches, feel a loosening of one of their teeth, or feel pain or swelling in the jaw? ",
+    {'Q': """Question 8:
+
+Do they have toothaches, feel a loosening of one of their teeth, or feel pain or swelling in the jaw? """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': "Do they have blurred vision or double vision associated with eye pain? (new onset and not related to spectacles) ",
+    {'Q': """Question 9:
+
+Do they have blurred vision or double vision associated with eye pain? (new onset and not related to spectacles) """,
      'A': [("Yes", 1),
            ("No", 0)]},
-    {'Q': "Have they recently recovered from covid and are having chest pain, fever, blood stained cough or breathing difficulties? ",
+    {'Q': """Question 10:
+
+Have they recently recovered from covid and are having chest pain, fever, blood stained cough or breathing difficulties? """,
      'A': [("Yes", 1),
            ("No", 0)]},
 ]
@@ -71,9 +91,9 @@ def getRiskLevel(score):
     elif score < 5:
         return "This patient is at low risk for Mucormycosis, and should get checked by a doctor if they have any symptoms."
     elif score < 8:
-        return "This patient is at moderate risk and should consult an ent specialist to rule out Mucormycosis."
+        return "This patient is at moderate risk and should consult an ENT specialist to rule out Mucormycosis."
     else:
-        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ent specialist, dental surgeon or ophthalmologist depending on their symptoms."
+        return "This patient is at high risk for Mucormycosis as per your responses, and should consult an ENT specialist, dental surgeon or ophthalmologist depending on their symptoms."
 
 
 def entry(bot, update):
@@ -126,7 +146,7 @@ def entry(bot, update):
         else:
             bot.sendMessage(chat_id=update.message.chat_id,
                             text="Patient risk assessment:\n\n"+getRiskLevel(user_status[chat_id]['score']) +
-                            "\n\n*Note that this is only a risk assessment and not medical advice. Consult a doctor if you suspect you have Mucormycosis\n\nSend /start to start over",
+                            "\n\n*Note that this is only a patient education initiative and not medical advice. Consult a doctor if you suspect you have Mucormycosis or any other health issues.\n\nSend /start to start over",
                             reply_markup=InlineKeyboardMarkup([
                                 [InlineKeyboardButton(
                                     "Know More about Mucormycosis", url='https://t.me/joinchat/lVtrYKWG3vk4MTc8')],
